@@ -2,21 +2,30 @@ import React, { useState } from 'react';
 import Dashboard from './components/Dashboard';
 import StaticAnalyzer from './components/StaticAnalyzer';
 import VisualTester from './components/VisualTester';
-import { Tab } from './types';
+import { Tab, HistoryItem } from './types';
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>(Tab.DASHBOARD);
+  const [history, setHistory] = useState<HistoryItem[]>([]);
+
+  const handleStaticAnalysisComplete = (item: HistoryItem) => {
+    setHistory(prev => [item, ...prev]);
+  };
+
+  const handleVisualTestComplete = (item: HistoryItem) => {
+    setHistory(prev => [item, ...prev]);
+  };
 
   const renderContent = () => {
     switch (activeTab) {
       case Tab.DASHBOARD:
-        return <Dashboard />;
+        return <Dashboard history={history} />;
       case Tab.STATIC_ANALYSIS:
-        return <StaticAnalyzer />;
+        return <StaticAnalyzer onAnalysisComplete={handleStaticAnalysisComplete} />;
       case Tab.VISUAL_REGRESSION:
-        return <VisualTester />;
+        return <VisualTester onTestComplete={handleVisualTestComplete} />;
       default:
-        return <Dashboard />;
+        return <Dashboard history={history} />;
     }
   };
 
@@ -47,7 +56,7 @@ const App: React.FC = () => {
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
             </svg>
-            <span className="font-medium">Dashboard</span>
+            <span className="font-medium">Дашборд</span>
           </button>
 
           <button
@@ -61,7 +70,7 @@ const App: React.FC = () => {
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
             </svg>
-            <span className="font-medium">Static Analysis</span>
+            <span className="font-medium">Статический анализ</span>
           </button>
 
           <button
@@ -76,16 +85,16 @@ const App: React.FC = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
             </svg>
-            <span className="font-medium">Visual Regression</span>
+            <span className="font-medium">Визуальная регрессия</span>
           </button>
         </nav>
 
         <div className="p-4 border-t border-slate-800">
            <div className="bg-slate-900 rounded-lg p-3">
-             <p className="text-xs text-slate-500 mb-1">Status</p>
+             <p className="text-xs text-slate-500 mb-1">Статус</p>
              <div className="flex items-center gap-2">
                <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-               <span className="text-sm font-medium text-slate-300">System Operational</span>
+               <span className="text-sm font-medium text-slate-300">Система работает</span>
              </div>
            </div>
         </div>
@@ -96,13 +105,15 @@ const App: React.FC = () => {
         {/* Header */}
         <header className="h-16 border-b border-slate-800 bg-slate-900/50 backdrop-blur flex items-center justify-between px-8">
           <h1 className="text-xl font-bold text-white">
-            {activeTab === Tab.DASHBOARD && 'Quality Overview'}
-            {activeTab === Tab.STATIC_ANALYSIS && 'Code Inspector'}
-            {activeTab === Tab.VISUAL_REGRESSION && 'Visual Diff Tool'}
+            {activeTab === Tab.DASHBOARD && 'Обзор качества'}
+            {activeTab === Tab.STATIC_ANALYSIS && 'Инспектор кода'}
+            {activeTab === Tab.VISUAL_REGRESSION && 'Инструмент визуального сравнения'}
           </h1>
           <div className="flex items-center gap-4">
-            <span className="text-sm text-slate-500">v1.0.0</span>
-            <div className="w-8 h-8 rounded-full bg-slate-700 border border-slate-600"></div>
+            <span className="text-sm text-slate-500">v1.1.0</span>
+            <div className="w-8 h-8 rounded-full bg-slate-700 border border-slate-600 flex items-center justify-center text-xs font-bold text-slate-400">
+               {history.length}
+            </div>
           </div>
         </header>
 
