@@ -1,0 +1,5 @@
+{
+  "name": "UI Quality Guard",
+  "description": "A comprehensive system for automatic quality control of web UI components using AI-driven static analysis and visual regression testing.",
+  "requestFramePermissions": []
+}
